@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: backend
+  template:
+    metadata:
+      labels:
+        component: backend
+    spec:
+      containers:
+        - name: backend
+          image: jack2210/techscrum:latest
+          env:
+          - name: NAME
+            value: "techscrumapp"
+          - name: PORT
+            value: "8000"
+          - name: MAIN_DOMAIN
+            value: "techscrumapp.com"
+          - name: LIMITER
+            value: "true"
+          - name: API_PREFIX
+            value: "/api"
+          - name: ENVIRONMENT
+            value: "production"
+          - name: STRIPE_PRIVATE_KEY
+            value: "random"
+          - name: STRIPE_WEBHOOK_SECRET
+            value: "random"
+          - name: EMAIL_SECRET
+            value: "123456"
+          - name: FORGET_SECRET
+            value: "321654"
+          - name: REGION
+            value: "us-central1"
+          - name: AWS_ACCESS_KEY_ID
+            value: "aaa"
+          - name: AWS_SECRET_ACCESS_KEY
+            value: "bbb"
+          - name: AWS_REGION
+            value: "us-central1"
+          - name: ACCESS_SECRET
+            value: "aaaa"
+          - name: ACCESS_KEY_ID
+            value: "aaaa"
+            
+    
+             
+          ports:
+            - containerPort: 8000
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: backend
+  ports:
+    - port: 8000
+      targetPort: 8000

@@ -1,0 +1,13 @@
+config:
+  target: "https://afternoon-fortress-36104.herokuapp.com/api/v1"
+  phases:
+    - duration: 60
+      arrivalRate: 20
+  ensure:
+    p99: 150
+    maxErrorRate: 1
+scenarios:
+  - name: "Basic Load test"
+    flow:
+      - get:
+          url: "/"
