@@ -2,9 +2,13 @@
 
 [TechScrum](https://techscrumapp.com)
 
-For more info please refer to
+### Prerequisites
 
-- https://lilac-dancer-737.notion.site/Backend-8d15124cec444344bbd41935ed697b1e
+- Node (Latest)
+- Npm (Latest)
+- AWS SES
+- AWS SES Template
+- AWS Route53 (Domain name)
 
 ### Tech Stack
 
@@ -14,86 +18,100 @@ For more info please refer to
 - Nodemon (Automatically restarts application when code files are updated)
 - Compression (Enabling gzip compression in Express.js)
 - Swagger (API docs)
-- Loggly (Cloud-based logging solutions)
 
-## TechDebt
+## Devops Requirements
 
-These are ongoing techdebt that needed to be fixed
+These are the requirements for **devops team** for **backend**
 
-- [] REMOVE all CommonJS require('...') to use ES6 modules ( import ... from '...' )
+### Environments
 
-See the [open issues](https://010001.atlassian.net/jira/software/projects/TEC/boards/2/backlog) for a full list of proposed features (and known issues).
+The currently environments would need to be build for developers
 
-### Prerequisites
+- Environments: **Develop**
+  - Domain: api-dev.{domain}
+  - Git branch: develop
+  - Complexity: Medium
+  - Priority: Medium
+- Environments: **Staging (Optional)**
+  - Domain: api-staging.{domain}
+  - Git branch: staging
+  - Complexity: Medium
+  - Priority: Low
+- Environments: **Production**
+  - Domain: api.{domain}
+  - Git branch: master
+  - Complexity: Low
+  - Priority: **High**
+- Environments: **Feature/Bugfix (Optional)**
+  - Domain: api-{issueNumber}.{domain}
+  - Git branch: {branchName}
+  - Complexity: High
+  - Priority: Low
+  - Description: When an PR is created, it should automatically generate its own environment (e.g., api-123.techscrumapp.com). This allows users to test that specific branch. To retrieve the ticket number, DevOps can extract it from the branch name.
 
-This is an example of how to list things you need to use the software and how to install them.
+### Database
 
-Docker Desktop
+The application uses **MongoDB(NoSQL)** to store data and **each environments** should connect to it's **own database** these environments are
 
-### Installation
+- local
+- dev
+- staging
+- production
 
-One time command
+### Health Check endpoints
 
-- docker build -t techscrum:lastest .
-- cp .env.example .env
-- Update the value in .env (https://1drv.ms/w/s!AjTqzZQqiCqtgdM7QigoxTePfKaQow?e=L8oUz1), Ask Kitman for password
+These are the following **endpoints** that should be added for **health check**.
+
+- {domain}/api/v2/healthcheck (GET), default 200
+- {domain}/api/v2/envs (GET)
+
+> NOTE: By default, this wil return 404. Only if **DEVOPS_MODE** is enabled **(USE AT YOUR OWN RISK)**.
+
+### CI/CD
+
+Please **integrate** the following **commands** into the CI/CD pipeline. If any steps fail, begin by reviewing the error message and then consult the FAQ section below. If the DevOps tutor is unable to assist, you can reach out to the developer tutor for further guidance.
+
+- npm install
 - npm run build
-- npm run init-app
-- Go to chrome paste this http://localhost:8000/api/v2/healthcheck
-
-### Start application
-
-docker run -p 8000:8000 -d -v ${pwd}/.:/app techscrum:lastest (WINDOW ONLY)
-
-localhost:8000
-
-## API Docs
-
-The generate the latest api docs you can run the following command
-
-- npm run swagger-autogen
-
-Once the docs is generated you can visit the via
-
-- http://localhost:[YOUR_PORT_NUMBER]/api-docs
-
-To know more about this package you can visit https://www.npmjs.com/package/swagger-autogen
-
-## Tests
-
+- npm run lint
 - npm run test
 
-## Logs
+### Logging
 
-Logs file help developers/devops to address server or code issues when application crashes, you would need to ask email and password from Kitman.
+This file contains debugging info for developers/devops to address server or code issues
 
-- Local: /storage/logs/logger.log. This file will only generate when there are errors
-- Production: https://techscrumapp.loggly.com/search?terms=tag:heroku&from=-20m&until=now&source_group=&newtab=1#terms=tag:*&from=2023-08-12T06:55:41.477Z&until=2023-08-12T07:15:41.477Z&source_group=
+All logs are in **/storage/logs/logger.log**. Devops must ensure developer/devops access **WITHOUT exposing it online**.
 
-## License
+## Setup
 
-## Contact
+The following services must be set up for the app to function properly
 
-Kitman Yiu - [Kitman Yiu](www.kitmanyiu.com)
-Emil (Junqian Su)
-Implement Register, Login, Forgetpassword, board, tasks, account setting, email sende.
-Jest testing: forgetPassword
+#### AWS SES
 
-## Coding Standard
+The current codebase uses **AWS SES** for **email**
 
-- https://lilac-dancer-737.notion.site/Coding-Guidelines-bfa77d75476a4b19a195ddb20b02bb33
+**IMPORTANT!!!** DevOps teams should **upload all files** from the **'src/emailTemplate'** directory using AWS commands.
 
-basic docker command
+#### Docker(Optional)
 
-- go into docker
-  docker ps (find your container id)
-  docker exec -it <container_id> bash
+I'd think Docker is highly recommended in the industry, but if not, please disregard.
 
-- kill all unused docker images
-  docker system prune
+## Running app locally
 
-cat filename
+Once you clone your project to your **local** to your computer. You can **run** the following **commands**
 
-//history | grep run
+- Read https://www.notion.so/Glossary-of-Terms-1654532ef6c84ccebcf37e879dd20935
 
-docker run -p 8000:8080 -d -v ${pwd}/.:/app techscrum:lastest
+- Run npm install (root folder)
+- npm run build (WILL TAKE A WHILE)
+- cp .env.example .env (Copy .env.example to .env)
+- Update the values in .env
+  - Ensure that **_DEVOPS_MODE=true_** and turn off later (ALL ENVIRONMENT APPLIES)
+- Run npm run init-app in the root folder and follow
+- npm start
+- Go to chrome paste this http://localhost:8000/api/v2/healthcheck
+- Go to chrome paste this http://localhost:8000/api/v2/envs
+
+## FAQ
+
+https://www.notion.so/Q-A-57aca2fcaa3047f5a0c1827ec5afaaa1
