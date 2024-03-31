@@ -17,8 +17,12 @@ jobs:
               uses: actions/checkout@v4
             - name: install dependencies
               run: npm install
+            - name: build app
+              run: npm run build
+            - name: lint tests
+              run: npm run lint
             - name: run tests
-              run: npm run tests
+              run: npm run test
     
     build:
         runs-on: ubuntu-latest
