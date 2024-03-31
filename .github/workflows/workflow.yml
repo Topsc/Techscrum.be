@@ -39,8 +39,8 @@ jobs:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: techscrum-be
               run: |
-                docker build -t $ECR_REGISTRY/ECR_REPOSITORY:$GITHUB_RUN_NUMBER .
-                docker push $ECR_REGISTRY/ECR_REPOSITORY:$GITHUB_RUN_NUMBER
+                docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_RUN_NUMBER .
+                docker push $ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_RUN_NUMBER
 
 
 
